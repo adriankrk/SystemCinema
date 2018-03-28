@@ -17,12 +17,45 @@ namespace SystemCinema
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
+    /// The main class for startup Window of our program
     /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            CinemaService.ReadFromCSV(this);
+        }
+
+        private void Sala1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            RoomMainForm room = new RoomMainForm(1);
+            OpenWindow(room);
+        }
+
+        private void Sala2_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            RoomMainForm room = new RoomMainForm(2);
+            OpenWindow(room);
+        }
+
+        private void Sala3_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            RoomMainForm room = new RoomMainForm(3);
+            OpenWindow(room);
+        }
+
+        private void Sala4_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            RoomMainForm room = new RoomMainForm(4);
+            OpenWindow(room);
+        }
+
+        //we open next window with parameter of room number
+        private void OpenWindow(RoomMainForm room){
+            room.Show();
+            room.MainForm = this;
+            this.Hide();
         }
     }
 }

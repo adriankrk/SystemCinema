@@ -5,8 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SystemCinema"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="System Kino" Height="465.474" Width="769.737" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF157FAE" Offset="0.004"/>
+            <GradientStop Color="#FF9CD7F9" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid Margin="0,0,16,1">
+        <Label x:Name="Title" Content="System zarządzania sprzedażą biletów" HorizontalAlignment="Left" Height="78" Margin="30,21,0,0" VerticalAlignment="Top" Width="718" FontFamily="Arial" FontSize="36" FontWeight="Bold">
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF4EE6C3" Offset="0"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+        </Label>
+        <Border Background="Transparent" BorderBrush="#FF0A7C95" BorderThickness="2,4,2,5" Margin="40,116,406,195"  MouseLeftButtonUp="Sala1_MouseLeftButtonUp">
+            <Label x:Name="FirstRoom_Copy4" Content="  Sala 1&#xA;75 miejsc" HorizontalAlignment="Left" Height="95" Margin="75,6,0,0" VerticalAlignment="Top" Width="204" FontFamily="Monotype Corsiva" FontSize="36" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF0DD60D" Background="Transparent" RenderTransformOrigin="0.488,-1.122">
+                <Label.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="#FF53FBBE" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Label.Foreground>
+
+            </Label>
+
+
+        </Border>
+        <Border x:Name="Sala2" Background="Transparent" BorderBrush="#FF0A7C95" BorderThickness="2,4,2,5" Margin="387,116,45,195" MouseLeftButtonUp="Sala2_MouseLeftButtonUp">
+            <Label x:Name="FirstRoom_Copy1" Content="   Sala 2&#xA;120 miejsc" HorizontalAlignment="Left" Height="95" Margin="74,6,0,0" VerticalAlignment="Top" Width="204" FontFamily="Monotype Corsiva" FontSize="36" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF0DD60D" Background="Transparent" RenderTransformOrigin="0.488,-1.122">
+                <Label.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="#FF53FBBE" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Label.Foreground>
+
+            </Label>
+        </Border>
+        <Border x:Name="Sala3" Background="Transparent" BorderBrush="#FF0A7C95" BorderThickness="2,4,2,5" Margin="40,268,406,51" MouseLeftButtonUp="Sala3_MouseLeftButtonUp">
+            <Label x:Name="FirstRoom_Copy2" Content="   Sala 3&#xA;147 miejsc" HorizontalAlignment="Left" Height="95" Margin="59,6,0,0" VerticalAlignment="Top" Width="204" FontFamily="Monotype Corsiva" FontSize="36" FontStyle="Italic" BorderBrush="#FF0DD60D" Background="Transparent" RenderTransformOrigin="0.488,-1.122" FontWeight="Bold">
+                <Label.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="#FFEBFFF8" Offset="0"/>
+                        <GradientStop Color="#FF81FFD1" Offset="1"/>
+                    </LinearGradientBrush>
+                </Label.Foreground>
+
+            </Label>
+        </Border>
+        <Border x:Name="Sala4" Background="Transparent" BorderBrush="#FF0A7C95" BorderThickness="2,4,2,5" Margin="387,268,45,51" MouseLeftButtonUp="Sala4_MouseLeftButtonUp">
+            <Label x:Name="FirstRoom_Copy3" Content="    Sala 4&#xA;192 miejsca" HorizontalAlignment="Left" Height="95" Margin="67,6,0,0" VerticalAlignment="Top" Width="204" FontFamily="Monotype Corsiva" FontSize="36" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF0DD60D" Background="Transparent" RenderTransformOrigin="0.488,-1.122">
+                <Label.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="#FFBAEEDB" Offset="0"/>
+                        <GradientStop Color="#FF81FFF9" Offset="1"/>
+                    </LinearGradientBrush>
+                </Label.Foreground>
+
+            </Label>
+        </Border>
     </Grid>
 </Window>

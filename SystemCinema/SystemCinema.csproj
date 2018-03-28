@@ -54,6 +54,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Room2_Availability.xaml.cs">
+      <DependentUpon>Room2_Availability.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Room3_Availability.xaml.cs">
+      <DependentUpon>Room3_Availability.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Room4_Availability.xaml.cs">
+      <DependentUpon>Room4_Availability.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RoomMainForm.xaml.cs">
+      <DependentUpon>RoomMainForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Room1_Availability.xaml.cs">
+      <DependentUpon>Room1_Availability.xaml</DependentUpon>
+    </Compile>
+    <Page Include="UI\RoomMainForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -62,10 +84,25 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Service\RoomPattern.cs" />
+    <Compile Include="Model\CinemaModel.cs" />
+    <Compile Include="Service\CinemaService.cs" />
+    <Page Include="UI\Room1_Availability.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Room2_Availability.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Room3_Availability.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Room4_Availability.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -93,5 +130,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
