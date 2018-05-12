@@ -10,9 +10,9 @@
     </Window.Background>
 
     <Grid>
-        <ListBox x:Name="ListBoxMovies" HorizontalAlignment="Left" Height="304" Margin="26,59,0,0" VerticalAlignment="Top" Width="140" Background="{x:Null}" BorderBrush="#FF07746A" Foreground="Black" FontFamily="Times New Roman" FontWeight="Bold"/>
+        <ListBox x:Name="ListBoxMovies" HorizontalAlignment="Left" Height="304" Margin="26,59,0,0" VerticalAlignment="Top" Width="154" Background="{x:Null}" BorderBrush="#FF07746A" Foreground="Black" FontFamily="Times New Roman" FontWeight="Bold" FontSize="14"/>
         <Label Content="Filmy" HorizontalAlignment="Left" Margin="53,18,0,0" VerticalAlignment="Top" Width="113" Foreground="#FF7FD6DA" FontFamily="Modern No. 20" FontSize="24" FontWeight="Bold"/>
-        <Button Style="{DynamicResource ButtonStyle}" x:Name="Read" Content="Wczytaj" HorizontalAlignment="Left" Height="32" Margin="26,368,0,0" VerticalAlignment="Top" Width="140" Click="Read_Click" Foreground="#FF025085" FontFamily="Times New Roman" FontSize="14" FontWeight="Bold">
+        <Button Style="{DynamicResource ButtonStyle}" x:Name="Read" Content="Wczytaj" HorizontalAlignment="Left" Height="32" Margin="26,368,0,0" VerticalAlignment="Top" Width="154" Click="Read_Click" Foreground="#FF025085" FontFamily="Times New Roman" FontSize="14" FontWeight="Bold">
             <Button.Background>
                 <RadialGradientBrush>
                     <GradientStop Color="#FFF3F3F3" Offset="0"/>
@@ -91,7 +91,7 @@
             </Button.Background>
         </Button>
         <Label x:Name="MainLabel" Content="Sala nr " HorizontalAlignment="Left" Height="52" Margin="347,2,0,0" VerticalAlignment="Top" Width="207" FontFamily="Stencil" FontSize="34" Foreground="#FF78DAD1"/>
-        <Button Style="{DynamicResource ButtonStyle}" x:Name="Raport_Button" Content="Raport" HorizontalAlignment="Left" Height="32" Margin="26,411,0,0" VerticalAlignment="Top" Width="140" Foreground="#FF025085" FontFamily="Times New Roman" FontSize="14" FontWeight="Bold" Click="Raport_Button_Click">
+        <Button Style="{DynamicResource ButtonStyle}" x:Name="Raport_Button" Content="Raport" HorizontalAlignment="Left" Height="32" Margin="26,411,0,0" VerticalAlignment="Top" Width="154" Foreground="#FF025085" FontFamily="Times New Roman" FontSize="14" FontWeight="Bold" Click="Raport_Button_Click">
             <Button.Background>
                 <RadialGradientBrush>
                     <GradientStop Color="#FFF3F3F3" Offset="0"/>

@@ -5,91 +5,54 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SystemCinema
 {
-    /// <summary>
-    /// Interaction logic for Room4_Availability.xaml
-    /// Class to select seat and sale ticket
-    /// </summary>
-    public partial class Room4_Availability : Window 
+    static class RoomView
     {
-        public Window Sala;                 //to close this window
-        private List<Button> Buttons;       //list with buttons, which are in grid
-        ToolTip t1 = new ToolTip();         //to display tip
-        RoomMainForm MainFormSala4;         //variable with object of parrent window
-        private bool availability;
-
-        public Room4_Availability(bool availability)
+        public static void Fill_grid(RoomMainForm main_form, IRoom room)
         {
-            InitializeComponent();
-            Buttons = new List<Button>();
-            FillButtonTable();
-            this.availability = availability;
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            this.Close();
-            Sala.Show();
-        }
-
-        /*****Fill grid of buttons (seats) with colours in dependency of its status********/
-        public void Fill_grid(RoomMainForm form)
-        {
-            this.MainFormSala4 = form;
-            int[,] sala_pattern = form.getSalaForm.Room;
+            int[,] sala_pattern = main_form.GetRoomForm.Room;
             for (int i = 0; i < sala_pattern.GetLength(0); i++)
             {
                 for (int j = 0; j < sala_pattern.GetLength(1); j++)
                 {
-
-                    //dataGridView.Rows[1].Cells[0].Value = "cell value";
-                    
                     if (sala_pattern[i, j] == 1)
                     {
-                        var itemsInGrid = dataGrid.Children
-                              .Cast<UIElement>()
-                              .Where(it => Grid.GetRow(it) == 0 && Grid.GetColumn(it) == 0);
-
                         string tmpButtonName = "button" + j.ToString() + "_" + i.ToString();
-                        Button result = Buttons.Find(x => x.Name.ToString() == tmpButtonName);
+                        Button result = room.Buttons.Find(x => x.Name.ToString() == tmpButtonName);
                         if (result != null)
                         {
-                            bool is_in_csv = false;
+                            bool isFree = true;
                             Tuple<int, int> t1 = new Tuple<int, int>(i, j);
-                            foreach (var item in form.list_with_one_movie_only)
+                            foreach (var item in main_form.ListWithOneMovieOnly)
                             {
-                                if (t1.Equals(item.Seat) && item.Type == TypeOfTicket.reservation)
+                                if (t1.Equals(item.Seat) && item.Type == TicketType.reservation)
                                 {
                                     result.Background = Brushes.Yellow;
-                                    is_in_csv = true;
+                                    isFree = false;
                                 }
-                                if (t1.Equals(item.Seat) && item.Type == TypeOfTicket.sale)
+                                if (t1.Equals(item.Seat) && item.Type == TicketType.sale)
                                 {
                                     result.Background = Brushes.Red;
-                                    is_in_csv = true;
+                                    isFree = false;
                                 }
-                                
+
                             }
-                            if (!is_in_csv || form.list_with_one_movie_only.Count == 0)
+                            if ( isFree || main_form.ListWithOneMovieOnly.Count == 0)
                             {
                                 result.Background = Brushes.Green;
                             }
                         }
-                            
+
 
                     }
                     else
                     {
                         string tmpButtonName = "button" + j.ToString() + "_" + i.ToString();
-                        Button result = Buttons.Find(x => x.Name.ToString() == tmpButtonName);
+                        Button result = room.Buttons.Find(x => x.Name.ToString() == tmpButtonName);
                         if (result != null)
                             result.Background = Brushes.Gray;
                     }
@@ -97,25 +60,8 @@ namespace SystemCinema
                 }
             }
         }
-        /*******************************************/
 
-        /*******Create list with all buttons********/
-        private void FillButtonTable()
-        {
-            for (int x = 0; x < 20; x++)
-                for (int y = 0; y < 12; y++)
-                    Buttons.Add(getButton(x, y));
-        }
-
-        private Button getButton(int x, int y)
-        {
-            string button_name = "button" + x.ToString() + "_" + y.ToString();
-            var button = this.FindName(button_name);
-            return (Button)button;
-        }
-
-        /******Get x and y of seat after buuton click and forward to form*****/
-        private void button_Click(object sender, RoutedEventArgs e)
+        public static bool ChooseSeat(object sender, RoomMainForm main_form, bool availability)
         {
             Button b = sender as Button;
             if (availability)
@@ -125,17 +71,17 @@ namespace SystemCinema
                     MessageBox.Show("Nie można wybrać tego miejsca!!!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
-                if (b.Background == Brushes.Green)
-                {
-                    string namebutton = b.Name;
-                    namebutton = namebutton.Substring(6);
-                    var newstr = namebutton.Split('_');
-                    MainFormSala4.seat = new Tuple<int, int>(Convert.ToInt32(newstr[1]), Convert.ToInt32(newstr[0]));
-                    MainFormSala4.SetLabel();
-                    this.Close();
-                    Sala.Show();
-                }
+                    if (b.Background == Brushes.Green)
+                    {
+                        string namebutton = b.Name;
+                        namebutton = namebutton.Substring(6);
+                        var newstr = namebutton.Split('_');
+                        main_form.Seat = new Tuple<int, int>(Convert.ToInt32(newstr[1]), Convert.ToInt32(newstr[0]));
+                        main_form.SetSeatLabel();
+                        return true;                      
+                    }
 
+                return false;
             }
             else
             {
@@ -149,57 +95,52 @@ namespace SystemCinema
                     namebutton = namebutton.Substring(6);
                     var newstr = namebutton.Split('_');
                     Tuple<int, int> thiseat = new Tuple<int, int>(Convert.ToInt32(newstr[1]), Convert.ToInt32(newstr[0]));
-                    var object_with_this_seat = MainFormSala4.list_with_one_movie_only.Find(x => x.Seat.Equals(thiseat));
+                    var object_with_this_seat = main_form.ListWithOneMovieOnly.Find(x => x.Seat.Equals(thiseat));
                     MessageBoxResult result = MessageBox.Show("Czy na pewno chcesz usunąć wpis o nazwie: " + object_with_this_seat.Name, "Potwierdzenie usunięcia", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
-                        MainFormSala4.list_with_one_movie_only.Remove(object_with_this_seat);
-                        MainFormSala4.sala_movies.Remove(object_with_this_seat);
-                        CinemaService.deleteEntry(object_with_this_seat);
-                        this.Close();
-                        Sala.Show();
+                        main_form.ListWithOneMovieOnly.Remove(object_with_this_seat);
+                        main_form.RoomMovies.Remove(object_with_this_seat);
+                        CinemaService.DeleteEntry(object_with_this_seat);
+                        return true;
                     }
                 }
+                return false;
             }
-
         }
 
-        /****Display customer name and x,y of seat after mouse leave*****/
-        private void button_MouseEnter(object sender, MouseEventArgs e)
+        public static void DisplayTip(object sender, RoomMainForm main_form, bool availability)
         {
-            Button b = sender as Button;   
+            Button b = sender as Button;
             string namebutton = b.Name;
             namebutton = namebutton.Substring(6);
             var newstr = namebutton.Split('_');
 
             if (availability)
             {
+
                 if (b.Background == Brushes.Gray)
                 {
                     ToolTip tooltip = new ToolTip { Content = "Miejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Nie dostępne" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
 
                 if (b.Background == Brushes.Green)
                 {
                     ToolTip tooltip = new ToolTip { Content = "Miejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Dostępne" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
 
                 if (b.Background == Brushes.Yellow)
                 {
                     ToolTip tooltip = new ToolTip { Content = "Miejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Zarezerwowane" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
 
                 if (b.Background == Brushes.Red)
                 {
                     ToolTip tooltip = new ToolTip { Content = "Miejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Sprzedane" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
             }
             else
@@ -208,41 +149,30 @@ namespace SystemCinema
                 {
                     ToolTip tooltip = new ToolTip { Content = "Miejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Nie dostępne" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
 
                 if (b.Background == Brushes.Green)
                 {
                     ToolTip tooltip = new ToolTip { Content = "Miejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Dostępne" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
 
                 if (b.Background == Brushes.Yellow)
                 {
                     Tuple<int, int> thiseat = new Tuple<int, int>(Convert.ToInt32(newstr[1]), Convert.ToInt32(newstr[0]));
-                    var object_with_this_seat = MainFormSala4.list_with_one_movie_only.Find(x => x.Seat.Equals(thiseat));
+                    var object_with_this_seat = main_form.ListWithOneMovieOnly.Find(x => x.Seat.Equals(thiseat));
                     ToolTip tooltip = new ToolTip { Content = "Klient: " + object_with_this_seat.Name + "\nMiejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Zarezerwowane" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
 
                 if (b.Background == Brushes.Red)
                 {
                     Tuple<int, int> thiseat = new Tuple<int, int>(Convert.ToInt32(newstr[1]), Convert.ToInt32(newstr[0]));
-                    var object_with_this_seat = MainFormSala4.list_with_one_movie_only.Find(x => x.Seat.Equals(thiseat));
+                    var object_with_this_seat = main_form.ListWithOneMovieOnly.Find(x => x.Seat.Equals(thiseat));
                     ToolTip tooltip = new ToolTip { Content = "Klient: " + object_with_this_seat.Name + "\nMiejsce (" + (Convert.ToInt32(newstr[1]) + 1).ToString() + "," + (Convert.ToInt32(newstr[0]) + 1).ToString() + ") - Sprzedane" };
                     b.ToolTip = tooltip;
-                    //tooltip.IsOpen = true;
                 }
             }
-                
-            
         }
-
-       
-
-       
-
     }
 }

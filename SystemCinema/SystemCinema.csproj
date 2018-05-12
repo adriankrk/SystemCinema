@@ -57,21 +57,23 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Room2_Availability.xaml.cs">
-      <DependentUpon>Room2_Availability.xaml</DependentUpon>
+    <Compile Include="UI\IRoom.cs" />
+    <Compile Include="UI\Room2.xaml.cs">
+      <DependentUpon>Room2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Room3_Availability.xaml.cs">
-      <DependentUpon>Room3_Availability.xaml</DependentUpon>
+    <Compile Include="UI\Room3.xaml.cs">
+      <DependentUpon>Room3.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Room4_Availability.xaml.cs">
-      <DependentUpon>Room4_Availability.xaml</DependentUpon>
+    <Compile Include="UI\Room4.xaml.cs">
+      <DependentUpon>Room4.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\RoomMainForm.xaml.cs">
       <DependentUpon>RoomMainForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Room1_Availability.xaml.cs">
-      <DependentUpon>Room1_Availability.xaml</DependentUpon>
+    <Compile Include="UI\Room1.xaml.cs">
+      <DependentUpon>Room1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\RoomView.cs" />
     <Page Include="UI\RoomMainForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,19 +89,19 @@
     <Compile Include="Service\RoomPattern.cs" />
     <Compile Include="Model\CinemaModel.cs" />
     <Compile Include="Service\CinemaService.cs" />
-    <Page Include="UI\Room1_Availability.xaml">
+    <Page Include="UI\Room1.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Room2_Availability.xaml">
+    <Page Include="UI\Room2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Room3_Availability.xaml">
+    <Page Include="UI\Room3.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Room4_Availability.xaml">
+    <Page Include="UI\Room4.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

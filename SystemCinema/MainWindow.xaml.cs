@@ -24,38 +24,36 @@ namespace SystemCinema
         public MainWindow()
         {
             InitializeComponent();
-            CinemaService.ReadFromCSV(this);
         }
 
         private void Sala1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            RoomMainForm room = new RoomMainForm(1);
+            RoomMainForm room = new RoomMainForm(1, this);
             OpenWindow(room);
         }
 
         private void Sala2_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            RoomMainForm room = new RoomMainForm(2);
+            RoomMainForm room = new RoomMainForm(2, this);
             OpenWindow(room);
         }
 
         private void Sala3_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            RoomMainForm room = new RoomMainForm(3);
+            RoomMainForm room = new RoomMainForm(3, this);
             OpenWindow(room);
         }
 
         private void Sala4_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            RoomMainForm room = new RoomMainForm(4);
+            RoomMainForm room = new RoomMainForm(4, this);
             OpenWindow(room);
         }
 
         //we open next window with parameter of room number
         private void OpenWindow(RoomMainForm room){
             room.Show();
-            room.MainForm = this;
-            this.Hide();
+            Hide();
         }
     }
 }

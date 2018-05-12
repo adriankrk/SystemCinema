@@ -21,31 +21,32 @@ namespace SystemCinema
     /// </summary>
     public partial class RoomMainForm : Window
     {
-        public Window MainForm;
-        public List<CinemaModel> sala_movies;                  //list of movies and seats, which are only in selected room
-        public List<CinemaModel> list_with_one_movie_only;     //list of seat per one movie
-        delegate TypeOfTicket delegatType(string value);        //delegate to convert string to TypeOfTicket (sale, reservation)
-        private RoomPattern sala;                             //binary pattern of our room
-        private string movie;                                 //one selected movie from ListBox of all movies
-        public Tuple<int, int> seat;
+        private Window mainWindow;
+        private string movie;                                         //one selected movie from ListBox of all movies
         private readonly int roomNumber;
 
-        public RoomMainForm(int number)
+        public List<CinemaModel> RoomMovies { get; private set; }     //list of movies and seats, which are only in selected room
+        public List<CinemaModel> ListWithOneMovieOnly { get; }        //list of seat per one movie
+        public Tuple<int, int> Seat { get; set; }
+        public RoomPattern GetRoomForm { get; private set; }
+
+        public RoomMainForm(int roomNumber, MainWindow mainWindow)
         {
             InitializeComponent();
-            this.roomNumber = number;
-            this.initRoom(number);
-            printMovies();
-            setMainLabel(number);
-            list_with_one_movie_only = new List<CinemaModel>();          
+            this.mainWindow = mainWindow;
+            this.roomNumber = roomNumber;
+            InitRoom(roomNumber);
+            PrintMovies();
+            SetMainLabel(roomNumber);
+            ListWithOneMovieOnly = new List<CinemaModel>();          
         }
 
         /********Get movies from selected room and print to ListBox***********/
-        private void printMovies()   
+        private void PrintMovies()   
         {
             ListBoxMovies.Items.Clear();
-            sala_movies = CinemaService.getMoviesByRoom(roomNumber);  
-            foreach (var it in sala_movies)
+            RoomMovies = CinemaService.GetMoviesByRoom(roomNumber);  
+            foreach (var it in RoomMovies)
             {
                 bool is_in_list = false;
                 foreach (var it1 in ListBoxMovies.Items)
@@ -63,20 +64,20 @@ namespace SystemCinema
         /********************************************************************/
 
         /************Initialize room with exlude chairs in dependency of room number**************/
-        private void initRoom(int numberOfroom){          
+        private void InitRoom(int numberOfroom){          
             switch (numberOfroom)
             {
                 case 1:                 
-                    sala = new RoomPattern(10, 5, 5);     // (dimension of room, lack of seat to x, lack of seat to y)
+                    GetRoomForm = new RoomPattern(10, 5, 5);     // (dimension of room, lack of seat to x, lack of seat to y)
                     break;                   
                 case 2:
-                    sala = new RoomPattern(12, 4, 6);
+                    GetRoomForm = new RoomPattern(12, 4, 6);
                     break;
                 case 3:
-                    sala = new RoomPattern(16, 9, 5);
+                    GetRoomForm = new RoomPattern(16, 9, 5);
                     break;
                 case 4:
-                    sala = new RoomPattern(20, 6, 8);
+                    GetRoomForm = new RoomPattern(20, 6, 8);
                     break;
             }
             
@@ -103,14 +104,14 @@ namespace SystemCinema
                 MessageBox.Show("Nie zaznaczono żadnego filmu!!!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             else
             {
-                list_with_one_movie_only.Clear();
+                ListWithOneMovieOnly.Clear();
                 movie = ListBoxMovies.SelectedItem.ToString();
                 movie_read.Content = movie;
-                foreach (var it in sala_movies)
+                foreach (var it in RoomMovies)
                 {
                     if (movie == it.Movie)
                     {
-                        list_with_one_movie_only.Add(it);    //filter seats for selected movie
+                        ListWithOneMovieOnly.Add(it);    //filter seats for selected movie
                     }
                 }
             }
@@ -127,7 +128,7 @@ namespace SystemCinema
             }
             else
             {
-                this.openNewWindow(roomNumber, 1);                //1-add new client window, 0 -delete client window
+                this.OpenNewWindow(roomNumber, true);                //1-add new client window, 0 -delete client window
             }
             
         }
@@ -142,30 +143,30 @@ namespace SystemCinema
             }
             else
             {
-                delegatType convert_type = (val) =>
+                TicketType convert_type(string val)
                 {
                     switch (val)
                     {
                         case "sprzedaż":
-                            return TypeOfTicket.sale; 
+                            return TicketType.sale;
                         case "rezerwacja":
-                            return TypeOfTicket.reservation; 
+                            return TicketType.reservation;
                         default:
-                            return TypeOfTicket.reservation; 
+                            return TicketType.reservation;
 
                     }
-                };
+                }
 
                 long epochTicks = new DateTime(1970, 1, 1).Ticks;
                 long unixTime = ((DateTime.UtcNow.Ticks - epochTicks) / TimeSpan.TicksPerSecond);
-                string typ = typeCombo.Text.ToString();
+                string type = typeCombo.Text.ToString();
 
                 /****New entry to our list of ticket*********/
-                CinemaModel entry = new CinemaModel(unixTime, convert_type(typ), NameTextBox.Text.ToString(), movie_read.Content.ToString(), 1, seat);
+                CinemaModel entry = new CinemaModel(unixTime, convert_type(type), NameTextBox.Text.ToString(), movie_read.Content.ToString(), roomNumber, Seat);
                 CinemaService.AddEntry(entry);
               
-                sala_movies.Add(entry);
-                list_with_one_movie_only.Add(entry);
+                RoomMovies.Add(entry);
+                ListWithOneMovieOnly.Add(entry);
 
                 /********Clear labels*****/
                 typeCombo.Text = "";
@@ -184,100 +185,45 @@ namespace SystemCinema
             }
             else
             {
-                this.openNewWindow(roomNumber, 0);  //1-add new client, 0 -delete client
+                OpenNewWindow(roomNumber, false);  //1-add new client, 0 -delete client
             }
         }
         /***********************************************/
         
         /********Open new window with seats availibity************/
-        private void openNewWindow(int room_number, int delOradd)
+        private void OpenNewWindow(int room_number, bool delOradd)
         {
-
-            if (delOradd == 0)              //1-add new client Window, 0 -delete client Window
-            {
                 switch (room_number)                        //open window in dependency of room number
                 {
                     case 1:
                         {
-                            Room1_Availability room = new Room1_Availability(false);
+                            Room1 room = new Room1(this, delOradd);
                             room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
+                            Hide();
                             break;
                         }
                     case 2:
                         {
-                            Room2_Availability room = new Room2_Availability(false);
+                            Room2 room = new Room2(this, delOradd);
                             room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
+                            Hide();
                             break;
                         }
                     case 3:
                         {
-                            Room3_Availability room = new Room3_Availability(false);
+                            Room3 room = new Room3(this, delOradd);
                             room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
+                            Hide();
                             break;
                         }
                     case 4:
                         {
-                            Room4_Availability room = new Room4_Availability(false);
+                            Room4 room = new Room4(this, delOradd);
                             room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
+                            Hide();
                             break;
                         }
-                }
-                
-            }
-            else
-            {
-                switch (room_number)                        //open window in dependency of room number
-                {
-                    case 1:
-                        {
-                            Room1_Availability room = new Room1_Availability(true);
-                            room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
-                            break;
-                        }
-                    case 2:
-                        {
-                            Room2_Availability room = new Room2_Availability(true);
-                            room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
-                            break;
-                        }
-                    case 3:
-                        {
-                            Room3_Availability room = new Room3_Availability(true);
-                            room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
-                            break;
-                        }
-                    case 4:
-                        {
-                            Room4_Availability room = new Room4_Availability(true);
-                            room.Show();
-                            room.Sala = this;
-                            room.Fill_grid(this);
-                            this.Hide();
-                            break;
-                        }
-                }
-            }
+                }         
    
         }
         /**************************************************************/ 
@@ -287,7 +233,7 @@ namespace SystemCinema
         {
             //tmp list beceuse we will check, increment licznik variable and delete entry
             List<CinemaModel> filmy_raport = new List<CinemaModel>();
-            foreach (var item in sala_movies)
+            foreach (var item in RoomMovies)
             {
                 filmy_raport.Add(item);
             }
@@ -301,7 +247,7 @@ namespace SystemCinema
                 int licznik = 0;
 
                 //check and delete if seat is not in our room
-                if (!checkIfSeatIsInRoom(roomNumber, filmy_raport, 0))
+                if (!CheckIfSeatIsInRoom(roomNumber, filmy_raport, 0))
                 {
                     filmy_raport.RemoveAt(0);
                     continue;
@@ -315,7 +261,7 @@ namespace SystemCinema
                 //check other seats if is equal to first in list
                 for (int i = 0; i < filmy_raport.Count; i++)
                 {
-                    if (!checkIfSeatIsInRoom(roomNumber, filmy_raport, i))
+                    if (!CheckIfSeatIsInRoom(roomNumber, filmy_raport, i))
                     {
                         filmy_raport.RemoveAt(i);
                         i--;
@@ -356,7 +302,7 @@ namespace SystemCinema
         {
             //tmp list beceuse we will check, increment licznik variable and delete entry
             List<CinemaModel> miejsca_raport = new List<CinemaModel>();
-            foreach(var item in sala_movies){
+            foreach(var item in RoomMovies){
                 miejsca_raport.Add(item);
             }
 
@@ -370,7 +316,7 @@ namespace SystemCinema
                 int licznik = 0;
 
                 //check and delete if seat is not in our room
-                if (!checkIfSeatIsInRoom(roomNumber, miejsca_raport, 0))
+                if (!CheckIfSeatIsInRoom(roomNumber, miejsca_raport, 0))
                 {
                     miejsca_raport.RemoveAt(0);
                     continue;
@@ -384,7 +330,7 @@ namespace SystemCinema
                 //check other seats if is equal to first in list
                 for (int i = 0; i < miejsca_raport.Count; i++)
                 {
-                    if (!checkIfSeatIsInRoom(roomNumber, miejsca_raport, i))
+                    if (!CheckIfSeatIsInRoom(roomNumber, miejsca_raport, i))
                     {
                         miejsca_raport.RemoveAt(i);
                         i--;
@@ -418,27 +364,27 @@ namespace SystemCinema
         }
 
         /*****************Check if x and y are less than dimension of room and if seat is 1 or 0***********/
-        private bool checkIfSeatIsInRoom(int room_number, List<CinemaModel> list, int i)
+        private bool CheckIfSeatIsInRoom(int room_number, List<CinemaModel> list, int i)
         {
              switch (roomNumber)
              {
                  case 1:
-                     if (list[i].Seat.Item1 > 9 || list[i].Seat.Item2 > 9 || sala.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
+                     if (list[i].Seat.Item1 > 9 || list[i].Seat.Item2 > 9 || GetRoomForm.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
                          return false;
                      else
                          return true;
                  case 2:
-                     if (list[i].Seat.Item1 > 11 || list[i].Seat.Item2 > 11 || sala.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
+                     if (list[i].Seat.Item1 > 11 || list[i].Seat.Item2 > 11 || GetRoomForm.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
                         return false;
                      else
                          return true;
                  case 3:
-                     if (list[i].Seat.Item1 > 11 || list[i].Seat.Item2 > 15 || sala.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
+                     if (list[i].Seat.Item1 > 11 || list[i].Seat.Item2 > 15 || GetRoomForm.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
                         return false;
                      else
                          return true;
                  case 4:
-                     if (list[i].Seat.Item1 > 11 || list[i].Seat.Item2 > 19 || sala.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
+                     if (list[i].Seat.Item1 > 11 || list[i].Seat.Item2 > 19 || GetRoomForm.Room[list[i].Seat.Item1, list[i].Seat.Item2] == 0)
                         return false;
                      else
                          return true;
@@ -448,27 +394,19 @@ namespace SystemCinema
         }
         /***************************************************/
 
+        public void SetSeatLabel()
+        {
+            if (Seat != null)
+                seatLabel.Content = (Seat.Item1 + 1).ToString() + "," + (Seat.Item2 + 1).ToString();
+        }
+
         private void Window_Closed(object sender, EventArgs e)
         {
-            this.Close();
-            MainForm.Show();
+            Close();
+            mainWindow.Show();
         }
 
-        public RoomPattern getSalaForm
-        {
-            get
-            {
-                return this.sala;
-            }
-        }
-
-        public void SetLabel()
-        {
-            if (seat != null)
-                seatLabel.Content = (seat.Item1 + 1).ToString() + "," + (seat.Item2 + 1).ToString();
-        }
-
-        private void setMainLabel(int room_number)
+        private void SetMainLabel(int room_number)
         {
             MainLabel.Content += room_number.ToString();    //write room number to main label (title)
         }

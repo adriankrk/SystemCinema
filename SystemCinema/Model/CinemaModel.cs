@@ -7,29 +7,23 @@ using System.Windows;
 
 namespace SystemCinema
 {
-    public enum TypeOfTicket {sale, reservation};
+    public enum TicketType {sale, reservation};
     
     /// <summary>  
     ///  Main class of our program for data from CSV 
     /// </summary>  
     public class CinemaModel
     {
-        private long timestamp;
-        private TypeOfTicket type;
-        private string name;
-        private string movie;
         private int room;
-        private Tuple<int, int> seat;
 
-
-        public CinemaModel(long timestamp, TypeOfTicket type, string name, string movie, int room, Tuple<int, int> seat)
+        public CinemaModel(long timestamp, TicketType type, string name, string movie, int room, Tuple<int, int> seat)
         {
-            this.timestamp = timestamp;
-            this.type = type;
-            this.name = name;
-            this.movie = movie;
+            Timestamp = timestamp;
+            Type = type;
+            Name = name;
+            Movie = movie;
             this.room = room;
-            this.seat = seat;
+            Seat = seat;
         }
 
         public int Room
@@ -37,73 +31,23 @@ namespace SystemCinema
             set
             {
                 if (value >=1 && value <= 4)
-                    this.room = value;
+                    room = value;
                 else
                     MessageBox.Show("Niepoprawny numer sali!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             }           
             get
             {
-                return this.room;
+                return room;
             }
         }
-        public string Movie
-        {
-            set
-            {
-                this.movie = value;
-            }
-            get
-            {
-                return this.movie;
-            }
-        }
+        public string Movie { set; get; }
 
-        public Tuple<int, int> Seat
-        {
-            set
-            {
-                this.seat = value;
-            }
-            get
-            {
-                return this.seat;
-            }
-        }
+        public Tuple<int, int> Seat { set; get; }
 
-        public TypeOfTicket Type
-        {
-            set
-            {
-                this.type = value;
-            }
-            get
-            {
-                return this.type;
-            }
-        }
+        public TicketType Type { set; get; }
 
-        public string Name
-        {
-            set
-            {
-                this.name = value;
-            }
-            get
-            {
-                return this.name;
-            }
-        }
+        public string Name { set; get; }
 
-        public long Timestamp
-        {
-            set
-            {
-                this.timestamp = value;
-            }
-            get
-            {
-                return this.timestamp;
-            }
-        }
+        public long Timestamp { set; get; }
     }
 }
